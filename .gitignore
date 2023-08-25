@@ -1,0 +1,6 @@
+/sqs/.terraform/
+/.idea/
+/sqs/.terraform.lock.hcl
+/sqs/sqs.plan
+/sqs/terraform.tfstate
+/sqs/terraform.tfstate.backup
