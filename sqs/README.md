@@ -22,14 +22,14 @@ Maximum number of in-flight messages is 20K.
 When a message is read by a consumer, it is not immediately deleted instead, it still lives in the message queue. Because SQS
 is a distributed system, there is no guarantee that consumer has received the message or has processed the message successfully.
 To ensure that messages are not lost, consumers must delete the message from SQS queue once it is successfully processed.
-But if the message resides in the Queue, then there is a chance that other consumers may also start processing the same message.
-To ensure that the message is not read by other consumers, there is a configuration option called 'Visibility Timeout'
-Default visibility timeout: 30 seconds. Minimum is 0 seconds and maximum is 12 hours.
+
+But if the message still resides in the Queue, won't other consumers pick them?
+No, to ensure that the message is not read by other consumers, there is a configuration option called 'Visibility Timeout'
 By setting appropriate visibility-timeout value, SQS ensures that the message is not made available for other consumers immediately and 
 the first consumer who processes the message successfully will delete the message at the end of the transaction.
 
-In an event of first consumer crashing before the message is deleted from the Queue, then on visibility-timeout expiry, message
-is made available for all consumers again.
+Default visibility timeout: 30 seconds. Minimum is 0 seconds and maximum is 12 hours.
 
-Note: Always ensure that you set visibility timeout to match execution time of your business logic. This ensures that the message
-is not made available for multiple consumers.
+Note:
+1. In an event of first consumer crashing before the message is deleted from the Queue, then on visibility-timeout expiry, message  is made available for all consumers again.
+2. Always ensure that you set visibility timeout to match execution time of your business logic. This ensures that the message is not made available for multiple consumers.
