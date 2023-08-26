@@ -3,12 +3,18 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 
 
-class AWSCloud:
-    def __init__(self, service, **kwargs):
+class BaseClass:
+    boto3_handle = None
+
+    def __init__(self, service, region_name):
         """ Initialize the class """
-        self.region = kwargs.get('region_name')
+        self.region = region_name
         self.service = service
-        self.boto3_conn = self.connect()
+
+        if BaseClass.boto3_handle is None:
+            BaseClass.boto3_handle = self.connect
+
+        self.connection = BaseClass.boto3_handle
 
     @property
     def connect(self):
