@@ -2,7 +2,7 @@ import argparse
 from AWSCloud.SQS import SQS
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Helps in publishing messages to SQS Queue")
+    parser = argparse.ArgumentParser(description="Helps in consuming messages to SQS Queue")
     parser.add_argument("--queue_name", "-q", action="store", required=True)
 
     args = parser.parse_args()
@@ -15,11 +15,3 @@ if __name__ == '__main__':
     else:
         print(f"Aborting the run as Queue URL for {args.queue_name} cannot be located.")
 
-    # TODO:
-    # Publish message
-    # Add another input argument support by which you can stream 'x' messages with 'y' sleep in between
-
-    # Subscriber code
-    # Read the message using short-polling
-    # Read the message using long-polling
-    # Have an intentional error during reading of message to simulate DLQ
