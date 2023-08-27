@@ -9,10 +9,27 @@ have maximum message size of 2GB.
 ## SQS Queue Types
 ### Standard Queues
 Standard queues are fast but at the same time they do not offer any gaurantee about the order in which messages are sent out.
-But they do guarantee atleast-once delivery of the message.
+They do guarantee atleast-once delivery of the message.
 Maximum number of in-flight messages is 120K
 
 ### FIFO Queues
-FIFO queues are slow when compared to Standard queues - this can be related to additional overhead of ensuring that the 
-order of messages is maintained. These queues always sends only 1 message.
+FIFO queues maintain the order of messages. They are slow when compared to Standard queues - this can be attributed to 
+additional overhead of ensuring that the order of messages is maintained. 
+These queues do not introduce any duplicate messages and does exactly-once processing of a given message.
 Maximum number of in-flight messages is 20K.
+
+## SQS Visibility Timeout
+When a message is read by a consumer, it is not immediately deleted instead, it still lives in the message queue. Because SQS
+is a distributed system, there is no guarantee that consumer has received the message or has processed the message successfully.
+To ensure that messages are not lost, consumers must delete the message from SQS queue once it is successfully processed.
+
+But if the message still resides in the Queue, won't other consumers pick them?
+No, to ensure that the message is not read by other consumers, there is a configuration option called 'Visibility Timeout'
+By setting appropriate visibility-timeout value, SQS ensures that the message is not made available for other consumers immediately and 
+the first consumer who processes the message successfully will delete the message at the end of the transaction.
+
+Default visibility timeout: 30 seconds. Minimum is 0 seconds and maximum is 12 hours.
+
+Note:
+1. In an event of first consumer crashing before the message is deleted from the Queue, then on visibility-timeout expiry, message  is made available for all consumers again.
+2. Always ensure that you set visibility timeout to match execution time of your business logic. This ensures that the message is not made available for multiple consumers.

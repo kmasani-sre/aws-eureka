@@ -41,3 +41,45 @@ class SQS(BaseClass):
                 print(f"Please check the provided queue name ({queue_name}) - it cannot be located.")
 
         return queue_url
+
+    def send_message(self, queue_url, message_attributes, message_body):
+
+        try:
+            response = self.connection.send_message(QueueUrl=queue_url,
+                                                    MessageAttributes=message_attributes,
+                                                    MessageBody=message_body)
+            if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+                return response.get('MessageId')
+        except botocore.exceptions.ClientError as err:
+            if err.response['Error']['Code'] == 'InternalError':
+                print('Error Message: {}'.format(err.response['Error']['Message']))
+                print('Request ID: {}'.format(err.response['ResponseMetadata']['RequestId']))
+                print('Http code: {}'.format(err.response['ResponseMetadata']['HTTPStatusCode']))
+            else:
+                raise err
+
+    def receive_message(self, queue_url):
+        # Receive message from SQS queue
+        response = self.connection.receive_message(
+            QueueUrl=queue_url,
+            AttributeNames=[
+                'SentTimestamp'
+            ],
+            MaxNumberOfMessages=1,
+            MessageAttributeNames=[
+                'All'
+            ],
+            VisibilityTimeout=0,
+            WaitTimeSeconds=0
+        )
+
+        message = response['Messages'][0]
+        receipt_handle = message['ReceiptHandle']
+
+    def delete_message_in_queue(self, queue_url, receipt_handle):
+        # Delete received message from queue
+        self.connection.delete_message(
+            QueueUrl=queue_url,
+            ReceiptHandle=receipt_handle
+        )
+        print('Deleted the message')
