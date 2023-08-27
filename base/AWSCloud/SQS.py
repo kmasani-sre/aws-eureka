@@ -45,8 +45,11 @@ class SQS(BaseClass):
     def send_message(self, queue_url, message_attributes, message_body):
 
         try:
-            self.connection.send_message(QueueUrl=queue_url, MessageAttributes=message_attributes, MessageBody=message_body)
-
+            response = self.connection.send_message(QueueUrl=queue_url,
+                                                    MessageAttributes=message_attributes,
+                                                    MessageBody=message_body)
+            if response.get('ResponseMetadata').get('HTTPStatusCode') == 200:
+                return response.get('MessageId')
         except botocore.exceptions.ClientError as err:
             if err.response['Error']['Code'] == 'InternalError':
                 print('Error Message: {}'.format(err.response['Error']['Message']))

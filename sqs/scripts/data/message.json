@@ -1,0 +1,27 @@
+{ "messages": [
+    {
+      "attributes": { "Name": {
+                        "DataType": "String",
+                        "StringValue": "Terraform"
+                      },
+                      "Category": {
+                        "DataType": "String",
+                        "StringValue": "IAC"
+                      }
+                    },
+      "payload": "Cloud agnostic resource provision tool"
+    },
+    {
+      "attributes": { "Name": {
+                        "DataType": "String",
+                        "StringValue": "CloudFormation"
+                      },
+                      "Category": {
+                        "DataType": "String",
+                        "StringValue": "IAC"
+                      }
+                    },
+      "payload": "AWS Specific Infrastructure resources provision service"
+    }
+  ]
+}
